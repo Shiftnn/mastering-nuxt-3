@@ -3,30 +3,45 @@
     <div class="lesson-content">
       <h3> LESSON {{ chapter.number }} - {{ lesson.number }}</h3>
       <h1>{{ lesson.title }}</h1> 
-      <p>{{ lessonText }}</p>
+      <p v-if="lessonText">{{ lessonText }}</p>
+      <!-- <lessonCompleteButton
+        :modelValue="isCompleted"
+        @update:modelValue="toggleComplete"
+      /> -->
     </div>
   </div>
 </template>
 
 <script setup>
-import auth from "~~/middleware/auth";
-
-const course = useCourse();
+import { useCourseProgress } from '~/stores/courseProgress.ts'
+import useCourse from "~~/composables/useCourse";
+const course = await useCourse();
 const route = useRoute();
-console.log(course[route.params.chapterSlug])
+const { chapterSlug, lessonSlug } = route.params
+const lesson = await useLesson(chapterSlug, lessonSlug)
+const store = useCourseProgress()
+const {initialize, toggleComplete} = store
+
+initialize()
+
 const chapter = computed(() => {
-  return course.chapters.find(
+  return course.value.chapters.find(
     (chapter) => chapter.slug === route.params.chapterSlug
   );
 });
-definePageMeta({
-  middleware: [
-    function ({ params }, to) {
-      const route = useRoute();
-      const course = useCourse();
 
-      const chapter = computed(() => {
-        return course.chapters.find(
+definePageMeta({
+  middleware: 
+  [
+    async function ({ params }, to) 
+    {
+
+      const route = useRoute();
+      const course = await useCourse();
+
+      const chapter = computed(() => 
+      {
+        return course.value.chapters.find(
           (chapter) => chapter.slug === route.params.chapterSlug
         );
       });
@@ -54,15 +69,12 @@ definePageMeta({
           })
         );
       }
-    },
-    "auth",
+    }, "auth",
   ],
 });
 
-const lesson = computed(() => {
-  return chapter.value.lessons.find(
-    (lesson) => lesson.slug === route.params.lessonSlug
-  );
+const isCompleted = computed(() => {
+  return store.progress?.[chapterSlug]?.[lessonSlug] || 0
 });
 
 const lessonText = computed(() => {
@@ -74,18 +86,4 @@ useHead({
 });
 </script>
 <style>
-  .lesson-content {
-    display: flex;
-    flex-direction: column;
-    max-width: 600px;
-  }
-  .lesson {
-    background-color: #fff;
-    border-radius: 10px;
-    display: flex;
-    min-width: 250px;
-    height: 100vh;
-    width: 70vw;
-    padding: 10%;
-  }
 </style>

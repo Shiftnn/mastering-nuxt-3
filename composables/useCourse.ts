@@ -1,31 +1,3 @@
-import courseData from './courseUse'
+import { CourseOutline } from '@/server/api/course/meta.get'
 
-type Lesson = {
-  title: string;
-  slug: string;
-  number: number;
-  text: string
-}
-
-type Chapter = {
-  title: string,
-  slug: string,
-  number: number,
-  lessons: Lesson[],
-}
-
-export const useCourse = () => {
-  const chapters: Chapter[] = courseData.chapters.map((chapter) => {
-      const lessons: Lesson[] = chapter.lessons.map((lesson) => ({
-        ...lesson,
-        path: `/course/chapter/${chapter.slug}/lesson/${lesson.slug}`
-      }));
-      return {
-        ...chapter, lessons,
-      }
-    }
-  );
-  return {
-    ...courseData, chapters
-  }
-}
+export default async () => useFetchWithCache<CourseOutline>('/api/course/meta')

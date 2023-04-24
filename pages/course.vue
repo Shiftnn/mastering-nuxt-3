@@ -1,6 +1,6 @@
 <template>
   <div style="display: flex; width: 100%; justify-content: space-between;">
-    Welcome to the course area!
+    <h2>{{ course.title }}</h2>
     <userCard />
   </div>
 
@@ -10,10 +10,10 @@
         v-for="(chapter, chapterNum) in course.chapters"
         :key="chapter.slug"
       >
-        <div style="display: flex; flex-direction: column; justify-content: start;">
+        <div style="display: flex; flex-direction: column; justify-content: start; align-items: center;">
           <h1>{{ chapter.title }}</h1>
           <nuxt-link
-            :to="lesson.path"
+            :to='`/course/chapter/${course.chapters[chapterNum].slug}/lesson/${lesson.slug}`'
             v-for="(lesson, index) in course.chapters[chapterNum].lessons"
             :key="lesson.slug"
           >
@@ -37,38 +37,19 @@
 </template>
 
 <script setup>
-const course = useCourse();
-const route = useRoute();
-console.log(course)
+const course = await useCourse();
 const errorHandler = async (error) => {
   await navigateTo("/course");
   error.value = null;
 };
 </script>
 <style scoped>
-.router-link-active {
-  color: rgb(103, 204, 9);
-}
 a {
   text-decoration: none;
   color: black;
 }
-.course {
-  display: flex;
-  gap: 20px;
-  width: 100vw;
-}
-.course-chapters {
-  background-color: #fff;
-  border-radius: 10px;
-  display: flex;
-  min-width: 250px;
-  margin-left: 20px;
-}
-.course-chapters_content {
-  max-width: 273px;
-}
-.course-chapters_content a {
-  max-width: 70%;
+
+router-link-active {
+  color: rgb(103, 204, 9);
 }
 </style>

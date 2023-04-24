@@ -1,0 +1,38 @@
+.but_agree {
+    background-color: #77da4c /*#56a039 */;
+}
+.course {
+  display: flex;
+  gap: 20px;
+  width: 100vw;
+}
+.course-chapters {
+  background-color: #fff;
+  border-radius: 10px;
+  display: flex;
+  min-width: 250px;
+  margin-left: 20px;
+}
+.course-chapters_content {
+  max-width: 273px;
+}
+.course-chapters_content a {
+  max-width: 70%;
+}
+.router-link-active {
+  color: rgb(103, 204, 9);
+}
+.lesson-content {
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+}
+.lesson {
+  background-color: #fff;
+  border-radius: 10px;
+  display: flex;
+  min-width: 250px;
+  height: 100vh;
+  width: 70vw;
+  padding: 10%;
+}
